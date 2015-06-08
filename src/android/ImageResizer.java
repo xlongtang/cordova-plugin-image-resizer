@@ -56,8 +56,9 @@ public class ImageResizer extends CordovaPlugin {
         // load the image from uri
         Bitmap bitmap = loadScaledBitmapFromUri(uri, width, height);
 
+        String fileName = uri.getLastPathSegment();
         // save the image as jpeg on the device
-        Uri scaledFile = saveFile(bitmap);
+        Uri scaledFile = saveFile(bitmap, fileName);
 
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, scaledFile.toString()));
         return true;
@@ -100,7 +101,7 @@ public class ImageResizer extends CordovaPlugin {
     return null;
   }
 
-  private Uri saveFile(Bitmap bitmap) {
+    private Uri saveFile(Bitmap bitmap, String fileName) {
     File folder = new File(Environment.getExternalStorageDirectory() + "/" + folderName);
     boolean success = true;
     if (!folder.exists()) {
@@ -108,7 +109,6 @@ public class ImageResizer extends CordovaPlugin {
     }
 
     if(success) {
-      String fileName = System.currentTimeMillis() + ".jpg";
       File file = new File(folder, fileName);
       if(file.exists()) file.delete();
       try {
