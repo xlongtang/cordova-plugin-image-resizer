@@ -56,7 +56,7 @@ public class ImageResizer extends CordovaPlugin {
         // load the image from uri
         Bitmap bitmap = loadScaledBitmapFromUri(uri, width, height);
 
-        String fileName = uri.getLastPathSegment();
+        String fileName = Uri.parse(uri).getLastPathSegment();
         // save the image as jpeg on the device
         Uri scaledFile = saveFile(bitmap, fileName);
 
