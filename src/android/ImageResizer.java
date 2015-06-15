@@ -101,8 +101,19 @@ public class ImageResizer extends CordovaPlugin {
     return null;
   }
 
+    private String getTempDirectoryPath() {
+        File cache = null;
+
+        // Use internal storage
+        cache = cordova.getActivity().getCacheDir();
+
+        // Create the cache directory if it doesn't exist
+        cache.mkdirs();
+        return cache.getAbsolutePath();
+    }
+
     private Uri saveFile(Bitmap bitmap, String fileName) {
-    File folder = new File(Environment.getExternalStorageDirectory() + "/" + folderName);
+    File folder = new File(getTempDirectoryPath() + "/" + folderName);
     boolean success = true;
     if (!folder.exists()) {
       success = folder.mkdir();
