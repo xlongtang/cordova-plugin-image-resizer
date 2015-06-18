@@ -53,14 +53,27 @@ public class ImageResizer extends CordovaPlugin {
         width = jsonObject.getInt("width");
         height = jsonObject.getInt("height");
 
-        // load the image from uri
-        Bitmap bitmap = loadScaledBitmapFromUri(uri, width, height);
+        // Conditionally create thumbnails
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(FileHelper.getInputStreamFromUriString(uri, cordova), null, options);
 
-        String fileName = Uri.parse(uri).getLastPathSegment();
-        // save the image as jpeg on the device
-        Uri scaledFile = saveFile(bitmap, fileName);
+        String retFile;
 
-        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, scaledFile.toString()));
+        if (options.outWidth < width + 60 && options.outHeight < height + 60) {
+            retFile = uri;
+        } else {
+            // load the image from uri
+            Bitmap bitmap = loadScaledBitmapFromUri(options, uri, width, height);
+
+            String fileName = Uri.parse(uri).getLastPathSegment();
+            // save the image as jpeg on the device
+            Uri scaledFile = saveFile(bitmap, fileName);
+
+            retFile = scaledFile.toString();
+        }
+
+        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, retFile));
         return true;
       } else {
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR));
@@ -68,7 +81,12 @@ public class ImageResizer extends CordovaPlugin {
       }
     } catch(JSONException e) {
     	Log.e("Protonet", "JSON Exception during the Image Resizer Plugin... :(");
+    } catch (FileNotFoundException e) {
+      Log.e("Protonet", "File not found. :(");
+    } catch (IOException e) {
+      Log.e("Protonet", "IO Exception :(");
     }
+
     callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR));
     return false;
   }
@@ -78,12 +96,8 @@ public class ImageResizer extends CordovaPlugin {
    *
    * @params uri the URI who points to the image
    **/
-  private Bitmap loadScaledBitmapFromUri(String uriString, int width, int height) {
+    private Bitmap loadScaledBitmapFromUri(BitmapFactory.Options options, String uriString, int width, int height) {
     try {
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-      BitmapFactory.decodeStream(FileHelper.getInputStreamFromUriString(uriString, cordova), null, options);
-
       //calc aspect ratio
       int[] retval = calculateAspectRatio(options.outWidth, options.outHeight);
 
@@ -101,8 +115,19 @@ public class ImageResizer extends CordovaPlugin {
     return null;
   }
 
+    private String getTempDirectoryPath() {
+        File cache = null;
+
+        // Use internal storage
+        cache = cordova.getActivity().getCacheDir();
+
+        // Create the cache directory if it doesn't exist
+        cache.mkdirs();
+        return cache.getAbsolutePath();
+    }
+
     private Uri saveFile(Bitmap bitmap, String fileName) {
-    File folder = new File(Environment.getExternalStorageDirectory() + "/" + folderName);
+    File folder = new File(getTempDirectoryPath() + "/" + folderName);
     boolean success = true;
     if (!folder.exists()) {
       success = folder.mkdir();
