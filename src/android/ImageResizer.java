@@ -131,26 +131,26 @@ public class ImageResizer extends CordovaPlugin {
     }
 
     private Uri saveFile(Bitmap bitmap, String fileName) {
-    File folder = new File(getTempDirectoryPath() + "/" + folderName);
-    boolean success = true;
-    if (!folder.exists()) {
-      success = folder.mkdir();
-    }
+        File folder = new File(getTempDirectoryPath() + "/" + folderName);
+        boolean success = true;
+        if (!folder.exists()) {
+            success = folder.mkdir();
+        }
 
-    if(success) {
-      File file = new File(folder, fileName);
-      if(file.exists()) file.delete();
-      try {
-        FileOutputStream out = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out);
-        out.flush();
-        out.close();
-      } catch(Exception e) {
-        Log.e("Protonet", e.toString());
-      }
-      return Uri.fromFile(file);
-    }
-    return null;
+        if(success) {
+            File file = new File(folder, fileName);
+            if(file.exists()) file.delete();
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out);
+                out.flush();
+                out.close();
+            } catch(Exception e) {
+                Log.e("Protonet", e.toString());
+            }
+            return Uri.fromFile(file);
+        }
+        return null;
   }
 
   /**
