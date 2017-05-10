@@ -1,0 +1,34 @@
+{
+    "name": "info.protonet.imageresizer",
+    "version": "0.1.1",
+    "description": "Plugin for resizing images only with the uri of the image.",
+    "cordova": {
+        "id": "info.protonet.imageresizer",
+        "platforms": [
+            "android",
+            "ios"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/xlongtang/cordova-plugin-image-resizer.git"
+    },
+    "keywords": [
+        "cordova",
+        "camera",
+        "image",
+        "reise"
+    ],
+    "author": "Joschka Schulz, Xiaolong Tang",
+    "license": "Apache 2.0",    
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.1.0"
+        }
+    ],
+    "bugs": {
+        "url": "https://github.com/xlongtang/cordova-plugin-image-resizer/issues"
+    },
+    "homepage": "https://github.com/xlongtang/cordova-plugin-image-resizer#readme"
+}

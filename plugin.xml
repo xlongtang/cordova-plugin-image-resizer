@@ -6,7 +6,6 @@
   <description>Plugin for resizing images only with the uri of the image.</description>
   <author>Joschka Schulz</author>
   <license>Apache 2.0</license>
-  <keywords>cordova,device,resize,image</keywords>
   <repo>https://github.com/protonet/cordova-plugin-image-resizer.git</repo>
 
   <js-module src="www/image_resizer.js" name="ImageResizer">
